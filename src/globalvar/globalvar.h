@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2011 - 2015
- *   University of Houston System and Oak Ridge National Laboratory.
+ *   University of Houston System and UT-Battelle, LLC.
  *
  * All rights reserved.
  *
@@ -44,9 +44,9 @@
  * memory classification and accessibility
  */
 
-extern int __shmem_symmetric_is_globalvar (void *addr);
+extern int shmemi_symmetric_is_globalvar (void *addr);
 
-extern void __shmem_symmetric_globalvar_table_init (void);
-extern void __shmem_symmetric_globalvar_table_finalize (void);
+extern void shmemi_symmetric_globalvar_table_init (void);
+extern void shmemi_symmetric_globalvar_table_finalize (void);
 
 #endif /* _GLOBALVAR_H */

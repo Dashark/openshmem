@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2011 - 2015
- *   University of Houston System and Oak Ridge National Laboratory.
+ *   University of Houston System and UT-Battelle, LLC.
  *
  * All rights reserved.
  *
@@ -40,6 +40,6 @@
 #ifndef _BARRIER_H
 #define _BARRIER_H 1
 
-extern void __shmem_barrier_dispatch_init (void);
+extern void shmemi_barrier_dispatch_init (void);
 
 #endif /* _BARRIER_H */

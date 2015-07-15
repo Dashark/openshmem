@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2011 - 2015
- *   University of Houston System and Oak Ridge National Laboratory.
+ *   University of Houston System and UT-Battelle, LLC.
  *
  * All rights reserved.
  *
@@ -62,7 +62,7 @@ typedef enum
  * translate PE state to human description
  */
 
-extern const char *__shmem_state_as_string (pe_status_t s);
+extern const char *shmemi_state_as_string (pe_status_t s);
 
 /*
  * per-PE state structure

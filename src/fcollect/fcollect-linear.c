@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2011 - 2015
- *   University of Houston System and Oak Ridge National Laboratory.
+ *   University of Houston System and UT-Battelle, LLC.
  *
  * All rights reserved.
  *
@@ -58,7 +58,7 @@
 
 #define SHMEM_FCOLLECT(Bits, Bytes)                                     \
   void                                                                  \
-  __shmem_fcollect##Bits##_linear(void *target, const void *source, size_t nelems, \
+  shmemi_fcollect##Bits##_linear(void *target, const void *source, size_t nelems, \
                                   int PE_start, int logPE_stride, int PE_size, \
                                   long *pSync)                          \
   {                                                                     \

@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2011 - 2015
- *   University of Houston System and Oak Ridge National Laboratory.
+ *   University of Houston System and UT-Battelle, LLC.
  *
  * All rights reserved.
  *
@@ -40,6 +40,6 @@
 #ifndef _VERSION_H
 #define _VERSION_H 1
 
-extern int __shmem_version (int *major, int *minor);
+extern int shmemi_version (int *major, int *minor);
 
 #endif /* _VERSION_H */

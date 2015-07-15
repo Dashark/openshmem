@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2011 - 2015
- *   University of Houston System and Oak Ridge National Laboratory.
+ *   University of Houston System and UT-Battelle, LLC.
  *
  * All rights reserved.
  *
@@ -40,7 +40,7 @@
 #include "comms.h"
 
 void
-__shmem_barrier_all_linear (void)
+shmemi_barrier_all_linear (void)
 {
-  __shmem_comms_barrier_all ();
+    shmemi_comms_barrier_all ();
 }
