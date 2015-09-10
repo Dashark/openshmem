@@ -3,6 +3,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -17,8 +22,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -102,18 +107,18 @@ extern "C"
 
 #elif defined(__GNUC__)
 
+#define _DEPRECATED \
+  __attribute__((deprecated))
+
   /* GCC has extended attribute syntax from 4.5 onward */
 
-# if __GNUC__ >= 4 && __GNUC_MINOR__ >= 5
+# if (__GNUC__ >= 5) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
 #  define _DEPRECATED_BY(...) \
   __attribute__((deprecated("use " #__VA_ARGS__ " instead")))
 #else
 # define _DEPRECATED_BY(...) \
-  __attribute__((deprecated))
+  _DEPRECATED
 #endif
-
-#define _DEPRECATED \
-  __attribute__((deprecated))
 
 #else
 
@@ -806,7 +811,7 @@ extern "C"
 
 #define SHMEM_MALLOC_MEMALIGN_FAILED      _SHMEM_MALLOC_MEMALIGN_FAILED
 #define SHMEM_MALLOC_REALLOC_FAILED       _SHMEM_MALLOC_REALLOC_FAILED
-#define	SHMEM_MALLOC_SYMMSIZE_FAILED      _SHMEM_MALLOC_SYMMSIZE_FAILED
+#define SHMEM_MALLOC_SYMMSIZE_FAILED      _SHMEM_MALLOC_SYMMSIZE_FAILED
 #endif
 
 #if 0

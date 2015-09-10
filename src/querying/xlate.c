@@ -40,35 +40,21 @@
  *
  */
 
+#ifdef HAVE_FEATURE_EXPERIMENTAL
 
+#include "symmtest.h"
 
-#include <stdio.h>
-#include <string.h>
+#include "comms.h"
 
-#include "state.h"
-#include "trace.h"
-#include "utils.h"
+#ifdef HAVE_FEATURE_PSHMEM
+#pragma weak shmemx_lookup_remote_addr = pshmemx_lookup_remote_addr
+#define shmemx_lookup_remote_addr pshmemx_lookup_remote_addr
+#endif /* HAVE_FEATURE_PSHMEM */
 
-#include "shmem.h"
+void *
+shmemx_lookup_remote_addr (void *addr, int pe)
+{
+    return shmemi_symmetric_addr_lookup (addr, pe);
+}
 
-#define SHMEM_BROADCAST_TYPE(Name, Size)                                \
-    void                                                                \
-    shmemi_broadcast##Name##_linear (void *target, const void *source,  \
-                                     size_t nelems,                     \
-                                     int PE_root, int PE_start,         \
-                                     int logPE_stride, int PE_size,     \
-                                     long *pSync)                       \
-    {                                                                   \
-        const int typed_nelems = nelems * Size;                         \
-        const int step = 1 << logPE_stride;                             \
-        const int root = (PE_root * step) + PE_start;                   \
-        const int me = GET_STATE (mype);                                \
-        shmem_barrier (PE_start, logPE_stride, PE_size, pSync);         \
-        if (EXPR_LIKELY (me != root))                                   \
-            {                                                           \
-                shmem_getmem (target, source, typed_nelems, root);      \
-            }                                                           \
-    }                                                                   \
-
-SHMEM_BROADCAST_TYPE (32, 4);
-SHMEM_BROADCAST_TYPE (64, 8);
+#endif /* HAVE_FEATURE_EXPERIMENTAL */

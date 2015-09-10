@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -38,6 +43,7 @@
 
 
 #include <sys/types.h>
+#include <stdint.h>
 
 #include "utils.h"
 #include "trace.h"
@@ -91,14 +97,16 @@ extern char *sherror (void);
  */
 extern long malloc_error;
 
-void FORTRANIFY (shpalloc) (void **addr, int *length, long *errcode, int *abort)
+void FORTRANIFY (shpalloc) (uintptr_t**addr, int *length,
+                            int *errcode, int *abort)
 {
+    /* convert 32-bit words to bytes */
+    const int scale = sizeof (int32_t);
     void *symm_addr;
 
     INIT_CHECK ();
 
-    /* symm_addr = (long *) shmalloc(*length * sizeof(long)); */
-    symm_addr = shmem_malloc (*length);
+    symm_addr = shmem_malloc (*length * scale);
 
     /* pass back status code */
     *errcode = malloc_error;
@@ -120,7 +128,7 @@ void FORTRANIFY (shpalloc) (void **addr, int *length, long *errcode, int *abort)
                   "shpalloc() was given non-symmetric memory sizes");
     /* MAYBE NOT REACHED */
 
-    addr = (void *) NULL;
+    addr = NULL;
 }
 
 /**
@@ -139,13 +147,13 @@ void FORTRANIFY (shpalloc) (void **addr, int *length, long *errcode, int *abort)
  *   program hangs.
  */
 
-void FORTRANIFY (shpdeallc) (void **addr, long *errcode, int *abort)
+void FORTRANIFY (shpdeallc) (uintptr_t **addr, int *errcode, int *abort)
 {
     INIT_CHECK ();
 
     shmemi_trace (SHMEM_LOG_MEMORY,
                   "shpdeallc(addr = %p, errcode = %d, abort = %d)",
-                  addr, *errcode, *abort);
+                  *addr, *errcode, *abort);
 
     shmem_free (*addr);
 
@@ -183,11 +191,12 @@ void FORTRANIFY (shpdeallc) (void **addr, long *errcode, int *abort)
  *   are missing, the program hangs.
  */
 
-void FORTRANIFY (shpclmove) (int *addr, int *length, long *errcode, int *abort)
+void FORTRANIFY (shpclmove) (uintptr_t **addr, int *length,
+                             int *errcode, int *abort)
 {
     INIT_CHECK ();
 
-    addr = shmem_realloc (addr, *length);
+    *addr = shmem_realloc (*addr, *length);
 
     /* pass back status code */
     *errcode = malloc_error;

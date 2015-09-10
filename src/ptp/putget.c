@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -102,11 +107,11 @@ extern void shmem_complexd_put (COMPLEXIFY (double) * dest,
     void                                                                \
     shmem_##Name##_put (Type *dest, const Type *src, size_t nelems, int pe) \
     {                                                                   \
-        const int typed_nelems = sizeof (Type) * nelems;                \
+        const size_t typed_nelems = nelems * sizeof (Type);             \
         INIT_CHECK ();                                                  \
         SYMMETRY_CHECK (dest, 1, "shmem_" #Name "_put");                \
         PE_RANGE_CHECK (pe, 4);                                         \
-        shmemi_comms_put (dest, (Type *) src, typed_nelems, pe);        \
+        shmemi_comms_put (dest, (void *) src, typed_nelems, pe);        \
     }
 
 SHMEM_TYPE_PUT (char, char);
@@ -189,11 +194,11 @@ extern void shmem_complexd_get (COMPLEXIFY (double) * dest,
     void                                                                \
     shmem_##Name##_get (Type *dest, const Type *src, size_t nelems, int pe) \
     {                                                                   \
-        const int typed_nelems = sizeof (Type) * nelems;                \
+        const size_t typed_nelems = nelems * sizeof (Type);             \
         INIT_CHECK ();                                                  \
         SYMMETRY_CHECK (src, 2, "shmem_" #Name "_get");                 \
         PE_RANGE_CHECK (pe, 4);                                         \
-        shmemi_comms_get(dest, (void *) src, typed_nelems, pe);         \
+        shmemi_comms_get (dest, (void *) src, typed_nelems, pe);        \
     }
 
 SHMEM_TYPE_GET (char, char);
@@ -261,7 +266,7 @@ shmem_getmem (void *dest, const void *src, size_t nelems, int pe)
     void                                                    \
     shmem_##Name##_p (Type *dest, Type value, int pe)       \
     {                                                       \
-        shmem_##Name##_put (dest, &value, 1, pe);           \
+        shmem_##Name##_put (dest, (const Type *) &value, 1, pe);    \
     }
 
 SHMEM_TYPE_P_WRAPPER (float, float);
@@ -300,8 +305,8 @@ SHMEM_TYPE_P_WRAPPER (complexf, COMPLEXIFY (float));
     shmem_##Name##_g (Type *addr, int pe)               \
     {                                                   \
         Type retval;                                    \
-        shmem_##Name##_get (&retval, addr, 1, pe);      \
-            return retval;                              \
+        shmem_##Name##_get (&retval, (const Type *) addr, 1, pe);   \
+        return retval;                                  \
     }
 
 SHMEM_TYPE_G_WRAPPER (float, float);

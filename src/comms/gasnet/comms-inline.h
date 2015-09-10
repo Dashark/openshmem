@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -426,8 +431,8 @@ shmemi_comms_barrier_all (void)
 /**
  * where the symmetric memory lives on the given PE
  */
-#define SHMEM_SYMMETRIC_VAR_BASE(p) (seginfo_table[(p)].addr)
-#define SHMEM_SYMMETRIC_VAR_SIZE(p) (seginfo_table[(p)].size)
+#define SHMEM_SYMMETRIC_HEAP_BASE(p) (seginfo_table[(p)].addr)
+#define SHMEM_SYMMETRIC_HEAP_SIZE(p) (seginfo_table[(p)].size)
 
 /**
  * translate my "dest" to corresponding address on PE "pe"
@@ -443,21 +448,21 @@ shmemi_symmetric_addr_lookup (void *dest, int pe)
     /* symmetric if inside of heap */
     {
         int me = GET_STATE (mype);
-        size_t al = (size_t) SHMEM_SYMMETRIC_VAR_BASE (me); /* lower bound */
-        size_t au = al + SHMEM_SYMMETRIC_VAR_SIZE (pe); /* upper bound */
+        size_t al = (size_t) SHMEM_SYMMETRIC_HEAP_BASE (me); /* lower bound */
         size_t aao = (size_t) dest; /* my addr as offset */
-        size_t offset = aao - al;
+        long offset = aao - al;
 
-        if (EXPR_LIKELY (offset < au)) {
-            /* and where it is in the remote heap */
-            char *rdest = SHMEM_SYMMETRIC_VAR_BASE (pe) + offset;
-
-            /* assume this is good */
-            return rdest;
+        /* trap addresses outside the heap */
+        if (offset < 0) {
+            return NULL;
         }
-    }
+        if (offset > SHMEM_SYMMETRIC_HEAP_SIZE (me)) {
+            return NULL;
+        }
 
-    return NULL;
+        /* and where it is in the remote heap */
+        return SHMEM_SYMMETRIC_HEAP_BASE (pe) + offset;
+    }
 }
 
 /*
@@ -771,7 +776,7 @@ get_lock_for (void *addr)
 
 #define COMMS_WAIT_TYPE(Name, Type, OpName, Op)                     \
     static inline void                                              \
-    shmemi_comms_wait_##Name##_##OpName (Type *var, Type cmp_value)	\
+    shmemi_comms_wait_##Name##_##OpName (Type *var, Type cmp_value) \
     {                                                               \
         GASNET_BLOCKUNTIL ( VOLATILIZE (Type, var) Op cmp_value );  \
     }
@@ -1442,13 +1447,17 @@ shmemi_comms_xor_request64 (void *target, void *value, size_t nbytes, int pe)
 /**
  * perform the ping
  *
- * TODO: JUST RETURN TRUE FOR NOW, NEED TO WORK ON PROGRESS LOGIC
+ * TODO: JUST RETURN TRUE FOR NOW IF GOOD PE, NEED TO WORK ON PROGRESS LOGIC
  *
  */
 static inline int
 shmemi_comms_ping_request (int pe)
 {
-    return 1;
+    if ( (pe >= 0) && (pe < GET_STATE(numpes)) ) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 /**

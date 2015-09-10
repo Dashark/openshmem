@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -44,6 +49,8 @@
  * Also provides pass-by-reference wrappers to translate C value params
  *
  */
+
+#include <stdint.h>
 
 #include "fortran-common.h"
 
@@ -1234,10 +1241,36 @@ double FORTRANIFY (shmemx_wtime) (void)
 
 #endif /* HAVE_FEATURE_EXPERIMENTAL */
 
+#if defined(HAVE_FEATURE_EXPERIMENTAL)
+
+#ifdef HAVE_FEATURE_PSHMEM
+#pragma weak shmemx_lookup_remote_addr_ = pshmemx_lookup_remote_addr_
+#define shmemx_lookup_remote_addr_ pshmemx_lookup_remote_addr_
+#endif /* HAVE_FEATURE_PSHMEM */
+
+uintptr_t * FORTRANIFY (shmemx_lookup_remote_addr) (uintptr_t *addr, int *pe)
+{
+    return shmemx_lookup_remote_addr (addr, *pe);
+}
+
+#endif /* HAVE_FEATURE_EXPERIMENTAL */
+
+
+#ifdef HAVE_FEATURE_PSHMEM
+#pragma weak shmem_info_get_version_ = pshmem_info_get_version_
+#define shmem_info_get_version_ pshmem_info_get_version_
+#endif /* HAVE_FEATURE_PSHMEM */
+
 void FORTRANIFY (shmem_info_get_version) (int *major, int *minor)
 {
     shmem_info_get_version (major, minor);
 }
+
+
+#ifdef HAVE_FEATURE_PSHMEM
+#pragma weak shmem_info_get_name_ = pshmem_info_get_name_
+#define shmem_info_get_name_ pshmem_info_get_name_
+#endif /* HAVE_FEATURE_PSHMEM */
 
 void FORTRANIFY (shmem_info_get_name) (char *name)
 {

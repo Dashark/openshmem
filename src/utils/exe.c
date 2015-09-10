@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -67,13 +72,13 @@ shmemi_executable_init (void)
     int fd;
 
     /* see if the shortcut works */
-    s = readlink (self, GET_STATE (exe_name), MAXPATHLEN);
+    s = readlink (self, GET_STATE (exe_name), MAXPATHLEN - 1);
 
     /* if not, try finding our PID */
     if (EXPR_UNLIKELY (s < 0)) {
         char buf[MAXPATHLEN];
         snprintf (buf, MAXPATHLEN, self_fmt, getpid ());
-        s = readlink (buf, GET_STATE (exe_name), MAXPATHLEN);
+        s = readlink (buf, GET_STATE (exe_name), MAXPATHLEN - 1);
     }
 
     /* dunno who I am, complain */
@@ -81,6 +86,7 @@ shmemi_executable_init (void)
         shmemi_trace (SHMEM_LOG_FATAL,
                       "can't find my own executable name (%s)",
                       strerror (errno));
+        goto bail;
         /* NOT REACHED */
     }
 
@@ -97,6 +103,9 @@ shmemi_executable_init (void)
     }
 
     SET_STATE (exe_fd, fd);
+
+ bail:
+    return;
 }
 
 /**

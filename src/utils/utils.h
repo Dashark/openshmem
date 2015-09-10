@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -56,18 +61,18 @@
  *
  */
 
-#define INIT_CHECK()							\
-  IF_DEBUGGING(								\
-	       const int s = GET_STATE (pe_status);			\
-	       if (s != PE_RUNNING)					\
-		 {							\
-		   shmemi_trace (SHMEM_LOG_FATAL,			\
-				  "Library is not running, reason: %s", \
-				  shmemi_state_as_string (s)		\
-				  );					\
-		   /* NOT REACHED */					\
-		 }							\
-									)
+#define INIT_CHECK()                                                    \
+    IF_DEBUGGING(                                                       \
+                 const int s = GET_STATE (pe_status);                   \
+                 if (s != PE_RUNNING)                                   \
+                     {                                                  \
+                         shmemi_trace (SHMEM_LOG_FATAL,                 \
+                                       "Library is not running, reason: %s", \
+                                       shmemi_state_as_string (s)       \
+                                       );                               \
+                         /* NOT REACHED */                              \
+                     }                                                  \
+                                                                        )
 
 /*
  * make sure a target PE is within the assigned range
@@ -76,18 +81,18 @@
 
 #include "trace.h"
 
-#define PE_RANGE_CHECK(pe, argpos)					\
-  IF_DEBUGGING(								\
-	       const int bot_pe = 0;					\
-	       const int top_pe = GET_STATE (numpes) - 1;		\
-	       if (pe < bot_pe || pe > top_pe) {			\
-		 shmemi_trace (SHMEM_LOG_FATAL,			\
-				"PE %d in argument #%d not within allocated range %d .. %d", \
-				pe, argpos, bot_pe, top_pe		\
-				);					\
-		 /* NOT REACHED */					\
-	       }							\
-									)
+#define PE_RANGE_CHECK(pe, argpos)                                      \
+    IF_DEBUGGING(                                                       \
+                 const int bot_pe = 0;                                  \
+                 const int top_pe = GET_STATE (numpes) - 1;             \
+                 if (pe < bot_pe || pe > top_pe) {                      \
+                     shmemi_trace (SHMEM_LOG_FATAL,                     \
+                                   "PE %d in argument #%d not within allocated range %d .. %d", \
+                                   pe, argpos, bot_pe, top_pe           \
+                                   );                                   \
+                     /* NOT REACHED */                                  \
+                 }                                                      \
+                                                                        )
 
 /*
  * check for symmetry of required addresses
@@ -96,48 +101,48 @@
 
 #include "symmtest.h"
 
-#define SYMMETRY_CHECK(addr, argpos, subrname)				\
-  IF_DEBUGGING(								\
-	       if (shmemi_symmetric_addr_lookup ((void *) addr, GET_STATE (mype)) == NULL) \
-		 {							\
-		   shmemi_trace (SHMEM_LOG_FATAL,			\
-				  "%s(), argument #%d @ %p is not symmetric", \
-				  subrname,				\
-				  argpos,				\
-				  addr					\
-				  );					\
-		   /* NOT REACHED */					\
-		 }							\
-									)
+#define SYMMETRY_CHECK(addr, argpos, subrname)  \
+    IF_DEBUGGING(                                                       \
+                 if (shmemi_symmetric_addr_lookup ((void *) addr, GET_STATE (mype)) == NULL) \
+                     {                                                  \
+                         shmemi_trace (SHMEM_LOG_FATAL,                 \
+                                       "%s(), argument #%d @ %p is not symmetric", \
+                                       subrname,                        \
+                                       argpos,                          \
+                                       addr                             \
+                                       );                               \
+                         /* NOT REACHED */                              \
+                     }                                                  \
+                                                                        )
 /*
  * sanity-check the length of put/get operations
  *
  */
 
-#define TXRX_LENGTH_CHECK(len, argpos, subrname)			\
-  IF_DEBUGGING(								\
-	       if ((len) == 0)						\
-		 {							\
-		   shmemi_trace (SHMEM_LOG_INFO,			\
-				  "%s(), length in argument #%d is zero, call has no effect", \
-				  subrname,				\
-				  argpos				\
-				  );					\
-		   return;						\
-		   /* NOT REACHED */					\
-		 }							\
-	       if ((len) < 0)						\
-		 {							\
-		   shmemi_trace (SHMEM_LOG_INFO,			\
-				  "%s(), length in argument #%d is negative, call has no effect", \
-				  subrname,				\
-				  argpos				\
-				  );					\
-		   return;						\
-		   /* NOT REACHED */					\
-		 }							\
-									\
-									)
+#define TXRX_LENGTH_CHECK(len, argpos, subrname)                        \
+    IF_DEBUGGING(                                                       \
+                 if ((len) == 0)                                        \
+                     {                                                  \
+                         shmemi_trace (SHMEM_LOG_INFO,                  \
+                                       "%s(), length in argument #%d is zero, call has no effect", \
+                                       subrname,                        \
+                                       argpos                           \
+                                       );                               \
+                         return;                                        \
+                         /* NOT REACHED */                              \
+                     }                                                  \
+                 if ((len) < 0)                                         \
+                     {                                                  \
+                         shmemi_trace (SHMEM_LOG_INFO,                  \
+                                       "%s(), length in argument #%d is negative, call has no effect", \
+                                       subrname,                        \
+                                       argpos                           \
+                                       );                               \
+                         return;                                        \
+                         /* NOT REACHED */                              \
+                     }                                                  \
+                                                                        \
+                                                    )
 
 #else /* ! HAVE_FEATURE_DEBUG */
 

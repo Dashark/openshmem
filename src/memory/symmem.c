@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -83,6 +88,7 @@ __shmalloc_symmetry_check (size_t size)
     if (shmalloc_remote_size == (long *) NULL) {
         shmemi_trace (SHMEM_LOG_FATAL,
                       "internal error: couldn't allocate memory for symmetry check");
+        return 0;               /* arbitrary PE number */
         /* NOT REACHED */
     }
     *shmalloc_remote_size = size;
@@ -90,7 +96,7 @@ __shmalloc_symmetry_check (size_t size)
 
     malloc_error = _SHMEM_MALLOC_OK;
 
-    /* 
+    /*
      * everyone checks everyone else's sizes, barf if mis-match
      *
      * TODO: probably some kind of Eureka! optimization opportunity here

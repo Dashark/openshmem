@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -69,7 +74,7 @@
     const int step = 1 << logPE_stride;                                 \
     const int last_pe = PE_start + step * (PE_size - 1);                \
     const int me = GET_STATE(mype);                                     \
-    /* TODO: temp fix: I know barrier doesn't use this many indices */	\
+    /* TODO: temp fix: I know barrier doesn't use this many indices */  \
     long *acc_off = & (pSync[_SHMEM_COLLECT_SYNC_SIZE - 1]);            \
                                                                         \
     INIT_CHECK();                                                       \

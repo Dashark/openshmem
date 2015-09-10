@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -55,9 +60,10 @@ debug_alloc_new (void *a, size_t s)
 {
     alloc_table_t *at = (alloc_table_t *) malloc (sizeof (*at));
 
-    if (at == (alloc_table_t *) NULL) {
+    if (at == NULL) {
         shmemi_trace (SHMEM_LOG_FATAL,
                       "internal error: out of memory allocating address/size record");
+        return NULL;
         /* NOT REACHED */
     }
     at->addr = a;
@@ -132,9 +138,10 @@ debug_alloc_del (void *a)
 {
     alloc_table_t *at = debug_alloc_find (a);
 
-    if (at == (alloc_table_t *) NULL) {
+    if (at == NULL) {
         shmemi_trace (SHMEM_LOG_FATAL,
                       "internal error: no hash table entry for address %p", a);
+        return;
         /* NOT REACHED */
     }
     HASH_DEL (atp, at);
@@ -150,7 +157,7 @@ void
 debug_alloc_replace (void *a, size_t s)
 {
 #if 1
-    /* 
+    /*
      * TODO: could be a typo in HASH_REPLACE_PTR
      * DONE: now fixed in uthash >= 1.9.9 (TC contributed fix)
      */

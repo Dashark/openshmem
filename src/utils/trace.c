@@ -2,6 +2,11 @@
  *
  * Copyright (c) 2011 - 2015
  *   University of Houston System and UT-Battelle, LLC.
+ * Copyright (c) 2009 - 2015
+ *   Silicon Graphics International Corp.  SHMEM is copyrighted
+ *   by Silicon Graphics International Corp. (SGI) The OpenSHMEM API
+ *   (shmem) is released by Open Source Software Solutions, Inc., under an
+ *   agreement with Silicon Graphics International Corp. (SGI).
  *
  * All rights reserved.
  *
@@ -16,8 +21,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * o Neither the name of the University of Houston System, Oak Ridge
- *   National Laboratory nor the names of its contributors may be used to
+ * o Neither the name of the University of Houston System,
+ *   UT-Battelle, LLC. nor the names of its contributors may be used to
  *   endorse or promote products derived from this software without specific
  *   prior written permission.
  *
@@ -368,15 +373,19 @@ shmemi_tracers_show (void)
     if (shmemi_trace_is_enabled (SHMEM_LOG_INIT)) {
         char buf[TRACE_MSG_BUF_SIZE];
         char *p = buf;
-        int i;
+        unsigned int i;
         trace_table_t *t = tracers;
+        const char *enamsg = "Enabled Messages: ";
+        /* how many chars are free in the bufer? */
+        unsigned int left = TRACE_MSG_BUF_SIZE - 1 - strlen (enamsg);
 
-        strcpy (p, "Enabled Messages: ");
+        strncpy (p, enamsg, left);
 
         for (i = 0; i < n_tracers; i += 1) {
             if (t->state == ON) {
-                strncat (p, t->text, strlen (t->text));
+                strncat (p, t->text, left);
                 strncat (p, " ", 1);
+                left -= strlen (t->text) + 1;
             }
             t += 1;
         }
@@ -409,7 +418,8 @@ shmemi_trace (shmem_trace_t msg_type, char *fmt, ...)
         strncat (tmp1, "\n", 1);
 
         fputs (tmp1, trace_log_stream);
-        fflush (trace_log_stream);  /* make sure this all goes out in 1 burst */
+        /* make sure this all goes out in 1 burst */
+        fflush (trace_log_stream);
 
         if (msg_type == SHMEM_LOG_FATAL) {
             exit (1);
