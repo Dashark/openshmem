@@ -1254,8 +1254,8 @@ make_add_request (void *target, void *value, size_t nbytes, int pe)
     p->completed_addr = &(p->completed);
     /* fire off request */
     gasnet_AMRequestMedium0 (pe, GASNET_HANDLER_ADD_OUT, p, sizeof (*p));
-    WAIT_ON_COMPLETION (p->completed);
-    free (p);
+    WAIT_ON_COMPLETION (p->completed);  // 
+    free (p);  // p disappeared
 }
 
 static inline void
