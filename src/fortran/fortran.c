@@ -51,6 +51,7 @@
  */
 
 #include <stdint.h>
+#include <string.h>
 
 #include "fortran-common.h"
 
@@ -525,14 +526,14 @@ FORTRANIFY_WAIT_UNTIL (int8, long);
 FORTRANIFY_WAIT (int4, int);
 FORTRANIFY_WAIT (int8, long);
 
-void FORTRANIFY (shmem_wait_until) (long *ivar, int *cmp, long *cmp_value)
+void FORTRANIFY (shmem_wait_until) (int *ivar, int *cmp, int *cmp_value)
 {
-    shmem_long_wait_until (ivar, *cmp, *cmp_value);
+    shmem_int_wait_until (ivar, *cmp, *cmp_value);
 }
 
-void FORTRANIFY (shmem_wait) (long *ivar, long *cmp_value)
+void FORTRANIFY (shmem_wait) (int *ivar, int *cmp_value)
 {
-    shmem_long_wait (ivar, *cmp_value);
+    shmem_int_wait (ivar, *cmp_value);
 }
 
 /*
@@ -1274,5 +1275,40 @@ void FORTRANIFY (shmem_info_get_version) (int *major, int *minor)
 
 void FORTRANIFY (shmem_info_get_name) (char *name)
 {
+    int len;
+    const int max_f_len = _SHMEM_MAX_NAME_LEN - 1;
+
+    /* get the C string */
     shmem_info_get_name (name);
+
+    /* pad with spaces for Fortran (TODO: memset better?) */
+    len = strlen (name);
+    while (len < max_f_len) {
+        name[len] = ' ';
+        len += 1;
+    }
 }
+
+#if defined(HAVE_FEATURE_EXPERIMENTAL)
+
+#ifdef HAVE_FEATURE_PSHMEM
+#pragma weak shmemx_fence_test_ = pshmemx_fence_test_
+#define shmemx_fence_test_ pshmemx_fence_test_
+#endif /* HAVE_FEATURE_PSHMEM */
+
+int FORTRANIFY (shmemx_fence_test) (void)
+{
+    return shmemx_fence_test ();
+}
+
+#ifdef HAVE_FEATURE_PSHMEM
+#pragma weak shmemx_quiet_test_ = pshmemx_quiet_test_
+#define shmemx_quiet_test_ pshmemx_quiet_test_
+#endif /* HAVE_FEATURE_PSHMEM */
+
+int FORTRANIFY (shmemx_quiet_test) (void)
+{
+    return shmemx_quiet_test ();
+}
+
+#endif /* HAVE_FEATURE_EXPERIMENTAL */

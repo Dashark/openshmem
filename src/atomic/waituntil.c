@@ -71,11 +71,11 @@
 
 /**
  * wait_until with operator dispatchers, type-parameterized.
- * NB the _SHMEM_CMP values are identical to the SHMEM_CMP ones.
+ * NB the SHMEM_CMP values are identical to the SHMEM_CMP ones.
  */
 #define SHMEM_TYPE_WAIT_UNTIL(Name, Type)                               \
     void                                                                \
-    shmem_##Name##_wait_until (Type *ivar, int cmp, Type cmp_value)     \
+    shmem_##Name##_wait_until (Type *ivar, int cmp, Type cmp_value) \
     {                                                                   \
         switch (cmp) {                                                  \
         case _SHMEM_CMP_EQ:                                             \
@@ -102,6 +102,8 @@
                           cmp,                                          \
                           #Name                                         \
                           );                                            \
+            return;                                                     \
+            /* NOT REACHED */                                           \
             break;                                                      \
         }                                                               \
     }
@@ -140,7 +142,7 @@ shmem_wait_until (long *ivar, int cmp, long cmp_value)
 
 #define SHMEM_TYPE_WAIT(Name, Type)                                 \
     void                                                            \
-    shmem_##Name##_wait(Type *ivar, Type cmp_value)                 \
+    shmem_##Name##_wait (Type *ivar, Type cmp_value)                \
     {                                                               \
         shmem_##Name##_wait_until (ivar, _SHMEM_CMP_NE, cmp_value); \
     }

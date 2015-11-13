@@ -54,8 +54,7 @@
  * known PE states
  */
 
-typedef enum
-{
+typedef enum {
     PE_UNINITIALIZED = 0,    /* start like this */
     PE_UNKNOWN,              /* for when we have no information yet */
     PE_RUNNING,              /* after start_pes() */
@@ -73,33 +72,32 @@ extern const char *shmemi_state_as_string (pe_status_t s);
  * per-PE state structure
  */
 
-typedef struct
-{
-  pe_status_t pe_status;        /* up and running yet? */
+typedef struct {
+    pe_status_t pe_status;      /* up and running yet? */
 
-  int numpes;                   /* # of processing elements */
-  int mype;                     /* rank of this processing element */
+    int numpes;                 /* # of processing elements */
+    int mype;                   /* rank of this processing element */
 
-  size_t heapsize;              /* size of symmetric heap (bytes) */
+    size_t heapsize;            /* size of symmetric heap (bytes) */
 
-  struct utsname loc;           /* some initial testing of locality */
+    int *locp;                  /* information about the 'hood */
 
-  char exe_name[MAXPATHLEN];    /* real name of executable */
-  int exe_fd;                   /* file descriptor of executable */
+    char exe_name[MAXPATHLEN];  /* real name of executable */
+    int exe_fd;                 /* file descriptor of executable */
 
-} state_t;
+} shmem_state_t;
 
 /*
  * the per-PE state
  */
 
-extern state_t __state;
+extern shmem_state_t shmemi_state;
 
 /*
  * set/get state variables
  */
 
-#define SET_STATE(var, val)   ( __state.var = val )
-#define GET_STATE(var)        ( __state.var )
+#define SET_STATE(var, val)   ( shmemi_state.var = val )
+#define GET_STATE(var)        ( shmemi_state.var )
 
 #endif /* _STATE_H */

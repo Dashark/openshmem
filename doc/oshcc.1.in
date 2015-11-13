@@ -39,35 +39,35 @@
 .\" SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
 
-.TH oshcxx/oshc++ 1 ""
+.TH oshcc 1 ""
 .SH NAME
-\fBoshcxx/oshc++\fP - compile an OpenSHMEM C++ program
+\fBoshcc\fP - compile an OpenSHMEM C program
 .SH SYNOPSIS
-\fBoshcxx/oshc++\fP
+\fBoshcc\fP
 .RS
 .br
 [ underlying compiler flags ]
 .br
-file.cxx [file.cxx ...]
+file.c [file.c ...]
 .RE
 .SH DESCRIPTION
-\fBoshcxx\fP, or equivalently \fBoshc++\fP, is a wrapper in the vein
-of mpicxx/mpic++ that compiles an OpenSHMEM program.  The wrapper
-hides implementation details from the user.
+\fBoshcc\fP is a wrapper in the vein of mpicc that compiles
+an OpenSHMEM program.  The wrapper hides implementation
+details from the user.
 .SH EXAMPLES
 The command
 .LP
 .RS
-$ oshcxx -g -o foo.exe foo.cxx
+$ oshcc -g -o foo.exe foo.c
 .RE
 .LP
-compiles C++ source code foo.cxx into the OpenSHMEM executable foo.exe.
+compiles foo.c into the OpenSHMEM executable foo.exe.
 .SH ENVIRONMENT
 The underlying compiler/linker invoked by this wrapper is determined
 when the OpenSHMEM library is built.  To override, set the
 .LP
 .RS
-\f(CROSH_CXX\fP
+\f(CROSH_CC\fP
 .RE
 .LP
 environment variable.
@@ -79,7 +79,7 @@ Library for convenience.
 .SH SEE ALSO
 intro_shmem(3),
 .br
-oshcc(1),
+oshcxx(1),
 .br
 oshfort(1),
 .br

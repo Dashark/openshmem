@@ -54,7 +54,7 @@ case "$progname" in
     oshcc)
         driver="${OSH_CC-$driver}"
         ;;
-    oshcxx | oshCC)
+    oshcxx | oshc++)
         driver="${OSH_CXX-$driver}"
         ;;
     oshfort)
@@ -65,4 +65,4 @@ case "$progname" in
         ;;
 esac
 
-$driver -I$SHMEM_INC_DIR $@ $SHMEM_LDFLAGS $GASNET_LDFLAGS $SHMEM_LIBS $GASNET_LIBS
+$driver -I$SHMEM_INC_DIR $SHMEM_LDFLAGS $GASNET_LDFLAGS $@ $SHMEM_LIBS $GASNET_LIBS

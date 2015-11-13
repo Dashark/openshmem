@@ -1,4 +1,4 @@
-! Emacs: -*- mode: fortran; -*-
+!     Emacs: -*- mode: fortran; -*-
 !
 !   Copyright (c) 2011 - 2015
 !     University of Houston System and UT-Battelle, LLC.
@@ -39,4 +39,8 @@
 !   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 !
 
-! Nothing here right now
+      double precision :: pshmemx_wtime
+
+      logical :: pshmemx_fence_test
+      logical :: pshmemx_quiet_test
+
